@@ -34,6 +34,8 @@ public class SecureController {
 
         Map<String, String> response = new HashMap<>();
         response.put("app.database.password", databasePassword);  // Ocultamos la contraseña
+        logger.info("🔑 Mostrando la API key");
+        logger.info(serviceApiKey);
         response.put("app.service.apikey", serviceApiKey); // Mostramos la API key
 
         return response;
