@@ -1,25 +1,33 @@
 package top.anyel.logger.filter;
 
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.Enumeration;
+
 /*
  * Author: Anyel EC
  * Github: https://github.com/Anyel-ec
  * Creation date: 18/03/2025
  */
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-
-import java.io.IOException;
-import java.util.Enumeration;
-
+@Slf4j
 @Component
 public class LogFilter implements Filter {
-    private static final Logger logger = LoggerFactory.getLogger(LogFilter.class);
 
+    /*
+     * This is a servlet filter that intercepts incoming HTTP requests.
+     *
+     * It checks if any request parameter name starts with "app." and logs a warning
+     * indicating that an attempt to access a sensitive property was blocked.
+     *
+     * Importance for hiding secrets: MEDIUM.
+     * While it does not modify property values, it adds an extra layer of security
+     * by monitoring and logging suspicious attempts to access sensitive data.
+     */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         // No need for initialization
@@ -34,7 +42,7 @@ public class LogFilter implements Filter {
         while (paramNames.hasMoreElements()) {
             String paramName = paramNames.nextElement();
             if (paramName.startsWith("app.")) {
-                logger.warn("Intento de acceso a propiedad bloqueada: {}", paramName);
+                log.warn("Intento de acceso a propiedad bloqueada: {}", paramName);
             }
         }
 

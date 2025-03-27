@@ -1,8 +1,8 @@
 package top.anyel.logger.service;
 
 import jakarta.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.PropertySource;
@@ -12,11 +12,27 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * Author: Anyel EC
+ * Github: https://github.com/Anyel-ec
+ * Creation date: 18/03/2025
+ */
+
+@Slf4j
 @Service
 public class PropertyService {
 
-    private static final Logger logger = LoggerFactory.getLogger(PropertyService.class);
-
+    /*
+     * This service loads all properties from the Spring Environment and stores them
+     * in a static map. For any property starting with "app.", it stores "******" instead
+     * of the actual value.
+     *
+     * It provides methods to retrieve all properties or a specific property.
+     *
+     * Importance for hiding secrets: HIGH.
+     * This service centralizes property loading and ensures that sensitive properties
+     * are masked. This prevents accidental exposure of secrets.
+     */
     private final ConfigurableEnvironment environment;
     private static final Map<String, String> propertiesMap = new HashMap<>();
 
@@ -26,7 +42,7 @@ public class PropertyService {
 
     @PostConstruct
     public void loadProperties() {
-        System.out.println("🔍 Cargando propiedades globalmente...");
+        log.info("🔍 Cargando propiedades globalmente...");
 
         for (PropertySource<?> propertySource : environment.getPropertySources()) {
             if (propertySource instanceof EnumerablePropertySource<?> enumerablePropertySource) {
@@ -41,12 +57,12 @@ public class PropertyService {
                     }
 
                     // Mostrar en consola para depuración
-                    System.out.println("🔹 Propiedad cargada: " + key + " = " + (key.startsWith("app.") ? "******" : value));
+                    log.info("🔹 Propiedad cargada: " + key + " = " + (key.startsWith("app.") ? "******" : value));
                 }
             }
         }
 
-        System.out.println("✅ Propiedades cargadas correctamente.");
+        log.info("✅ Propiedades cargadas correctamente.");
     }
 
     public static Map<String, String> getAllProperties() {
